@@ -10,7 +10,7 @@ Requirements list:
 
 Current status of requirements:
 
-1. Database designed, built and tested
+1. Database designed, built and tested. (Example of a typical pizza shop has been used).
 2. Website hosting purchased, basic website implementation
 3. RFID equiptment bought, basic SDK file to link to database <- Development required. 
 
