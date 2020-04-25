@@ -1,0 +1,401 @@
+DROP TABLE IF EXISTS Rota;
+DROP TABLE IF EXISTS `Order Details`;
+DROP TABLE IF EXISTS Ingredients;
+DROP TABLE IF EXISTS Menu;
+DROP TABLE IF EXISTS `Perishable Inventory`;
+DROP TABLE IF EXISTS `UK Shelf Life`;
+DROP TABLE IF EXISTS `Order`;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS `Role`;
+DROP TABLE IF EXISTS Customer;
+DROP TABLE IF EXISTS `Store Details`;
+DROP TABLE IF EXISTS `Storage`;
+DROP TABLE IF EXISTS `Perishable Details`;
+
+
+/* Units in database: 
+Size in cubic centimeters. 
+Cost is to two decimal places without using decimal.
+Weight is in grams 
+Duration is in hours */
+
+CREATE TABLE IF NOT EXISTS `Role` (
+Duty CHAR(20) NOT NULL,
+	PRIMARY KEY (Duty)
+);
+
+
+CREATE TABLE IF NOT EXISTS Employee (
+EmployeeID INT(10) NOT NULL AUTO_INCREMENT,
+    EmployeeFirstName CHAR(20) NOT NULL,
+    EmployeeLastName CHAR(20) NOT NULL,
+    DOB DATE NOT NULL,
+    Gender CHAR(6) NOT NULL,
+    EmployeePassword VARCHAR(20) NOT NULL,
+		PRIMARY KEY(EmployeeID)
+);
+
+CREATE TABLE IF NOT EXISTS Customer ( 
+CustomerID INT(10) NOT NULL AUTO_INCREMENT,
+	FirstName CHAR(20) NOT NULL,
+	LastName CHAR(20) NOT NULL,
+	Address VARCHAR(50) NOT NULL,
+		PRIMARY KEY(CustomerID)
+);
+
+   
+   
+  CREATE TABLE IF NOT EXISTS Rota (
+  Duty CHAR(20) NOT NULL,
+  EmployeeID INT(10) NOT NULL,
+	DateAndTimeIN DATE NOT NULL,
+    DateAndTimeOUT DATE NOT NULL,
+		PRIMARY KEY(Duty, EmployeeID),
+		FOREIGN KEY(Duty) REFERENCES `Role`(Duty),
+        FOREIGN KEY(EmployeeID) REFERENCES Employee(EmployeeID)
+  );
+
+
+
+	CREATE TABLE IF NOT EXISTS `Order` (
+	OrderID INT(10) NOT NULL AUTO_INCREMENT,
+	CustomerID INT(10) NOT NULL,
+	EmployeeID INT(10) NOT NULL,
+	OrderType CHAR(3) NOT NULL,
+	PaymentMethod CHAR(4) NOT NULL,
+	DateAndTime DATE NOT NULL,
+		PRIMARY KEY(OrderID),
+		FOREIGN KEY(CustomerID) REFERENCES Customer(CustomerID),
+		FOREIGN KEY(EmployeeID) REFERENCES Employee(EmployeeID)
+);
+  
+  CREATE TABLE IF NOT EXISTS Menu (
+  ItemName CHAR(30) NOT NULL,
+  RetailPrice INT(5) NOT NULL,
+		PRIMARY KEY (ItemName)
+  );
+INSERT INTO Menu(ItemName, RetailPrice)
+VALUES('9" Pepperoni Pizza', 1299);
+ 
+ INSERT INTO Menu
+ VALUES('12" Pepperoni Pizza', 1499);
+ 
+INSERT INTO Menu
+VALUES('14" Pepperoni Pizza', 1699);
+
+INSERT INTO Menu
+VALUES('9" Meatfeast Pizza', 1399);
+ 
+ INSERT INTO Menu
+ VALUES('12" Meatfeast Pizza', 1599);
+ 
+INSERT INTO Menu
+VALUES('14" Meatfeast pizza', 1799);
+
+  
+
+  CREATE TABLE IF NOT EXISTS `Order Details` (
+  OrderID INT(10) NOT NULL AUTO_INCREMENT,
+  ItemName CHAR(30) NOT NULL,
+	Price INT(8) NOT NULL,
+	Quantity INT(2) NOT NULL,
+		PRIMARY KEY(OrderID, ItemName),
+        FOREIGN KEY(OrderID) REFERENCES `Order`(OrderID),
+        FOREIGN KEY(ItemName) REFERENCES Menu(ItemName)
+  );
+
+CREATE TABLE IF NOT EXISTS `Perishable Details` ( 
+FoodType CHAR(20) NOT NULL,
+	BulkWeightG INT(8) NOT NULL,
+	FoodSize3 INT(8) NOT NULL,
+	InventoryPrice INT(5),
+		PRIMARY KEY (FoodType)
+);
+
+INSERT INTO `Perishable Details`(FoodType, BulkWeightG, FoodSize3, InventoryPrice)
+VALUES('Mozzarella Cheese', 1200, 125000, 5099);
+
+/*Dough 8 per tray, 10 trays in a stack.
+Mozzeralla 6 bags per box. */
+
+   INSERT INTO `Perishable Details` 
+   VALUES('Dough9', 17600, 5000000, 3200);
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Dough12', 30400, 5000000, 3600);	
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Dough14', 52000, 5000000, 4000);	
+    
+   INSERT INTO `Perishable Details` 
+   VALUES('String Cheese', 2000, 62500, 1049);
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Pizza Sauce', '17860', '2500', '5000');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Bacon Pieces', '1000', '1000', '650');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Shredded Ham', '2000', '2000', '750');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Sausage', '1000', '1000', '750');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Pepperoni', '1000', '1000', '749');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Spicey Beef', '1000', '1000', '699');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Chinese Chicken', '1000', '1000', '799');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('BBQ Chicken', '1000', '1000', '650');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Chicken Tikka', '1000', '1000', '685');
+   
+   INSERT INTO `Perishable Details` 
+   VALUES('Tandoori Chicken', '1000', '1000', '650');
+   
+   
+
+  CREATE TABLE IF NOT EXISTS `Store Details` (
+  StoreID INT(5) NOT NULL,
+	FirstLineAddress VARCHAR(30) NOT NULL,
+	Town CHAR(8),
+	Postcode VARCHAR(8),
+		PRIMARY KEY(StoreID)
+        
+        );
+
+CREATE TABLE IF NOT EXISTS `Storage` (
+StorageType CHAR(30) NOT NULL,
+	StorageSize INT(8) NOT NULL,
+    StoreID INT(5) NOT NULL,
+		PRIMARY KEY (StorageType)
+);
+
+INSERT INTO `Storage`(StorageType, StorageSize, StoreID)
+VALUES('Dry Storage', 15625000, 1);
+
+   INSERT INTO `Storage` 
+   VALUES('Defrost', 15625000, 1);
+   
+/*'Chill' shares same space, add both values and take away from 1 storage size for available space*/
+   
+   INSERT INTO `Storage` 
+   VALUES('Unopened Chill', 15625000, 1);
+   
+   INSERT INTO `Storage` 
+   VALUES('Opened Chill', 15625000, 1);
+   
+   INSERT INTO `Storage` 
+   VALUES('Opened Room Temperature', 15625000, 1);
+   
+   INSERT INTO `Storage` 
+   VALUES('Freezer', 15625000, 1);
+
+
+
+
+CREATE TABLE IF NOT EXISTS `Perishable Inventory` (
+RFIDID INT(16) NOT NULL AUTO_INCREMENT,
+	FoodType CHAR(20) NOT NULL,
+    StorageType CHAR(20) NOT NULL,
+    ExpiryDate DATE NOT NULL,
+		PRIMARY KEY (RFIDID),
+        FOREIGN KEY (FoodType) REFERENCES `Perishable Details`(FoodType),
+        FOREIGN KEY (StorageType) REFERENCES `Storage`(StorageType)
+);
+
+        
+CREATE TABLE IF NOT EXISTS `UK Shelf Life` (
+FoodType CHAR(20) NOT NULL,
+StorageType CHAR(30) NOT NULL,
+	Duration INT(5) NOT NULL,
+		PRIMARY KEY (FoodType, StorageType),
+		FOREIGN KEY (FoodType) REFERENCES `Perishable Details`(FoodType),
+		FOREIGN KEY (StorageType) REFERENCES `Storage`(StorageType)
+);
+
+INSERT INTO `UK Shelf Life` (FoodType, StorageType, Duration)
+VALUES('Dough9', 'Unopened Chill', 168);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Dough12', 'Unopened Chill', 168);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Dough14', 'Unopened Chill', 168);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Dough9', 'Freezer', 2088);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Dough12', 'Freezer', 2088);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Dough14', 'Freezer', 2088);
+
+INSERT INTO `UK Shelf Life`
+VALUES('String Cheese', 'Defrost', 24);
+
+INSERT INTO `UK Shelf Life`
+VALUES('String Cheese', 'Unopened Chill', 168);
+
+INSERT INTO `UK Shelf Life`
+VALUES('String Cheese', 'Freezer', 5568);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Pizza Sauce', 'Dry Storage', 25920);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Pizza Sauce', 'Opened Chill', 24);
+
+INSERT INTO `UK Shelf Life`
+VALUES('Pizza Sauce', 'Opened Room Temperature', 24);
+
+INSERT INTO `UK Shelf Life` 
+VALUES('Mozzarella Cheese', 'Defrost', 24);
+
+INSERT INTO `UK Shelf Life`
+VALUES ('Mozzarella Cheese', 'Unopened Chill', 168);
+
+INSERT INTO `UK Shelf Life`
+VALUES ('Mozzarella Cheese', 'Opened Chill', 24);
+
+INSERT INTO `UK Shelf Life`
+VALUES ('Mozzarella Cheese', 'Freezer', 5568);
+
+INSERT INTO `UK Shelf Life` 
+VALUES('Bacon Pieces', 'Defrost', 24);
+
+INSERT INTO `UK Shelf Life` 
+VALUES('Bacon Pieces', 'Unopened Chill', 48);
+
+INSERT INTO `UK Shelf Life` 
+VALUES('Bacon Pieces', 'Opened Chill', 48);
+
+
+
+
+  CREATE TABLE IF NOT EXISTS Ingredients(
+  ItemName CHAR(30) NOT NULL,
+  FoodType CHAR(20) NOT NULL,
+  WeightG INT(8),
+		PRIMARY KEY(ItemName, FoodType),
+		FOREIGN KEY (ItemName) REFERENCES Menu(ItemName),
+        FOREIGN KEY (FoodType) REFERENCES `Perishable Details`(FoodType)
+        
+        );
+
+INSERT INTO Ingredients (ItemName, FoodType, WeightG)
+VALUES('9" Pepperoni Pizza', 'Dough9', 220);
+
+INSERT INTO Ingredients 
+VALUES('9" Pepperoni Pizza', 'Mozzarella Cheese',  200);
+
+INSERT INTO Ingredients
+VALUES('9" Pepperoni Pizza', 'Pizza Sauce', 103);
+
+INSERT INTO Ingredients
+VALUES('9" Pepperoni Pizza', 'Pepperoni', 120);
+
+INSERT INTO Ingredients
+VALUES('12" Pepperoni Pizza', 'Dough12', 380);
+
+INSERT INTO Ingredients 
+VALUES('12" Pepperoni Pizza', 'Mozzarella Cheese',  250);
+
+INSERT INTO Ingredients
+VALUES('12" Pepperoni Pizza', 'Pizza Sauce', 123);
+
+INSERT INTO Ingredients
+VALUES('12" Pepperoni Pizza', 'Pepperoni', 180);
+
+INSERT INTO Ingredients
+VALUES('14" Pepperoni Pizza', 'Dough14', 650);
+
+INSERT INTO Ingredients 
+VALUES('14" Pepperoni Pizza', 'Mozzarella Cheese',  300);
+
+INSERT INTO Ingredients
+VALUES('14" Pepperoni Pizza', 'Pizza Sauce', 143);
+
+INSERT INTO Ingredients
+VALUES('14" Pepperoni Pizza', 'Pepperoni', 240);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Dough9',  220);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Mozzarella Cheese',  200);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Pizza Sauce',  103);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Pepperoni',  30);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Spicey Beef',  30);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Chinese Chicken',  30);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'BBQ Chicken',  30);
+
+INSERT INTO Ingredients 
+VALUES('9" Meatfeast Pizza', 'Tandoori Chicken',  30);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Dough12',  380);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Mozzarella Cheese',  250);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Pizza Sauce',  123);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Pepperoni',  60);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Spicey Beef',  60);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Chinese Chicken',  60);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'BBQ Chicken',  60);
+
+INSERT INTO Ingredients 
+VALUES('12" Meatfeast Pizza', 'Tandoori Chicken',  60);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Dough14',  650);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Mozzarella Cheese',  300);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Pizza Sauce',  143);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Pepperoni',  90);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Spicey Beef',  90);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Chinese Chicken',  90);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'BBQ Chicken',  90);
+
+INSERT INTO Ingredients 
+VALUES('14" Meatfeast Pizza', 'Tandoori Chicken',  90);
+
