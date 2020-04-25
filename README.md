@@ -1,6 +1,6 @@
 # Perishable Inventory Management System Online - Big Kitchens e.g TakeAways/Hotels/Schools
 
-Creation of a real-time perishable inventory managmentsystem online 'Pimso', Systems components have been aquired and implemented. Now looking for assitance on developing further whilst in infancy.
+Creation of a real-time perishable inventory managmentsystem online 'Pimso', Systems components have been aquired and implemented. Now looking for assitance on developing the system further.
 
 Requirements list: 
 
